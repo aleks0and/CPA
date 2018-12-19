@@ -1,6 +1,7 @@
 import pandas as pd
 pd.set_option('display.max_columns',10)
 from dataPreprocessing import data_preprocessing
+from utils import load_data
 
 def explicative_structure_table(column_name, df):
     churn_yes = "Churn_Yes"
@@ -10,7 +11,7 @@ def explicative_structure_table(column_name, df):
     # grouping by column name, counting the occurences and the churn in each group
     table = df.groupby(column_name).agg({column_name: 'count', churn_yes: 'sum'})
     # calculate the percentage of population belonging to each group
-    table[percentage_population] = round((table[column_name] / n), 3)
+    table[percentage_population] = round((table[column_name] / n), 5)
     table[average_churn_rage] = table[churn_yes] / table[column_name]
     table = table.drop([column_name, churn_yes], axis=1)
     table = table.append({percentage_population: sum(table[percentage_population]),
@@ -29,7 +30,7 @@ def explicative_structure_table_with_bins(column_name, df, bin_division):
     # grouping by column name, counting the occurences and the churn in each group
     table = df.groupby(new_c_name).agg({new_c_name: 'count', churn_yes: 'sum'})
     # calculate the percentage of population belonging to each group
-    table[percentage_population] = round((table[new_c_name] / n), 3)
+    table[percentage_population] = round((table[new_c_name] / n), 5)
     table[average_churn_rage] = table[churn_yes] / table[new_c_name]
     table = table.drop([new_c_name, churn_yes], axis=1)
     table = table.append({percentage_population: sum(table[percentage_population]),
@@ -47,17 +48,19 @@ def ranges_string_creation(range_list):
     return range_in_string
 
 
-def run_EST_for_dummies_list(columnList, df):
+def run_EST(columnList, columns_needing_bins, bins, df):
     for column in columnList:
         print("creating explicative structure table for {}", column)
         print(explicative_structure_table(column, df))
 
+    for i in range(len(columns_needing_bins)):
+        print("Explicative structure table for ", columns_needing_bins[i])
+        print(explicative_structure_table_with_bins(columns_needing_bins[i], df, bins[i]))
 
 #TESTING
 
 path = "TelcoCustomerChurn.csv"
-df_telco = pd.read_csv(path)
-df = data_preprocessing(df_telco)
+df = data_preprocessing(load_data(path))
 column_names_to_drop = ['Churn_Yes', 'customerID']
 columns_needing_bins = ['tenure', 'MonthlyCharges', 'TotalCharges']
 bins_for_columns = [[0, 3, 10, 20, 35, 50, 65, 72],
@@ -68,7 +71,4 @@ for name in column_names_to_drop:
     column_names.remove(name)
 for name in columns_needing_bins:
     column_names.remove(name)
-for i in range(len(columns_needing_bins)):
-    print("Explicative structure table for ",columns_needing_bins[i])
-    print(explicative_structure_table_with_bins(columns_needing_bins[i], df, bins_for_columns[i]))
-run_EST_for_dummies_list(column_names,df)
+run_EST(column_names, columns_needing_bins, bins_for_columns, df)
