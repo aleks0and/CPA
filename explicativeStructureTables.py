@@ -20,6 +20,7 @@ def explicative_structure_table(column_name, df):
     return table
 
 
+# TO BE CHECKED
 def explicative_structure_table_multiple_columns(column_names, df):
     churn_yes = "Churn_Yes"
     # grouping by column name, counting the occurences and the churn in each group
@@ -33,7 +34,6 @@ def explicative_structure_table_multiple_columns(column_names, df):
             print(f'{number_of_occurences} for {table.index.levels[0].name} equal to {i} and for {table.index.levels[1].name} equal to {j}')
     table = table.unstack()
     return table
-
 
 
 def explicative_structure_table_with_bins(column_name, df, bin_division):
@@ -64,8 +64,8 @@ def ranges_string_creation(range_list):
     return range_in_string
 
 
-def run_EST(columnList, columns_needing_bins, bins, df):
-    for column in columnList:
+def run_EST(column_list, columns_needing_bins, bins, df):
+    for column in column_list:
         print("creating explicative structure table for {}", column)
         print(explicative_structure_table(column, df))
 
@@ -73,8 +73,8 @@ def run_EST(columnList, columns_needing_bins, bins, df):
         print("Explicative structure table for ", columns_needing_bins[i])
         print(explicative_structure_table_with_bins(columns_needing_bins[i], df, bins[i]))
 
-#TESTING
 
+# TESTING
 path = "TelcoCustomerChurn.csv"
 df = data_preprocessing(load_data(path))
 column_names_to_drop = ['Churn_Yes', 'customerID']
@@ -92,7 +92,7 @@ for name in columns_needing_bins:
 churn_yes = "Churn_Yes"
 percentage_population = "Percentage population"
 average_churn_rage = "Average churn rate"
-column_names = ['Dependents_Yes','Partner_Yes']
+column_names = ['Dependents_Yes', 'Partner_Yes']
 n = len(df)
 # grouping by column name, counting the occurences and the churn in each group
 table = df.groupby(column_names)[churn_yes].sum()

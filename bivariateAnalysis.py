@@ -79,6 +79,7 @@ def descriptive_analysis_of_logit(logit_result, df, dv, ivs):
     skplt.metrics.plot_confusion_matrix(df[dv], logit_result.predict() > 0.5)
     plt.show()
 
+
 path = "TelcoCustomerChurn.csv"
 df = data_preprocessing(load_data(path))
 # The reference variable is Churn, which is qualitative. For this reason we will have to use ANOVA when comparing it

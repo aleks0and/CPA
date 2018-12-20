@@ -11,6 +11,7 @@ from scipy.cluster.hierarchy import dendrogram
 from utils import load_data, standardize_data
 from dataPreprocessing import data_preprocessing
 
+
 def hierarchical_cluster_analysis(df):
     plt.figure(figsize=(10, 15))
     clusters = linkage(pdist(df, metric='euclidean'), method='complete')

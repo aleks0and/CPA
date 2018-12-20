@@ -3,7 +3,8 @@ import pandas as pd
 from utils import load_data
 from dataPreprocessing import data_preprocessing, finding_outliers_for_columns_list
 
-#this has to be corrected as we dont want to be manually adding senior citizen.
+
+# this has to be corrected as we dont want to be manually adding senior citizen.
 def frequency_measure_visualized(df, names_to_drop):
     names_to_drop = set(names_to_drop)
     dummies_names = [x for x in list(df) if x not in names_to_drop]
