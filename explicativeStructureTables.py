@@ -24,12 +24,13 @@ def explicative_structure_table_multiple_columns(column_names, df):
     churn_yes = "Churn_Yes"
     # grouping by column name, counting the occurences and the churn in each group
     table = df.groupby(column_names)[churn_yes].sum()
+    # it requires a double manual check.
     for i in range(len(table.index.levels)):
         for j in range(len(table.index.levels[i])):
-            number_of_occurences = len(df.loc[(df[table.index.levels[i].name] == i) &
-                                              (df[table.index.levels[j].name] == j)])
+            number_of_occurences = len(df.loc[(df[table.index.levels[0].name] == i) &
+                                              (df[table.index.levels[1].name] == j)])
             table[i][j] = table[i][j] / number_of_occurences
-            print(f'{number_of_occurences} for {table.index.levels[i].name} equal to {i} and for {table.index.levels[i].name} equal to {j}')
+            print(f'{number_of_occurences} for {table.index.levels[0].name} equal to {i} and for {table.index.levels[1].name} equal to {j}')
     table = table.unstack()
     return table
 
@@ -98,5 +99,4 @@ table = df.groupby(column_names)[churn_yes].sum()
 table = table.transform(lambda x: round((x/n), 5))
 table = table.unstack()
 print(table)
-
 print(explicative_structure_table_multiple_columns(column_names, df))
