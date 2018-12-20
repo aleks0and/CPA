@@ -20,6 +20,21 @@ def explicative_structure_table(column_name, df):
     return table
 
 
+def explicative_structure_table_multiple_columns(column_names, df):
+    churn_yes = "Churn_Yes"
+    # grouping by column name, counting the occurences and the churn in each group
+    table = df.groupby(column_names)[churn_yes].sum()
+    for i in range(len(table.index.levels)):
+        for j in range(len(table.index.levels[i])):
+            number_of_occurences = len(df.loc[(df[table.index.levels[i].name] == i) &
+                                              (df[table.index.levels[j].name] == j)])
+            table[i][j] = table[i][j] / number_of_occurences
+            print(f'{number_of_occurences} for {table.index.levels[i].name} equal to {i} and for {table.index.levels[i].name} equal to {j}')
+    table = table.unstack()
+    return table
+
+
+
 def explicative_structure_table_with_bins(column_name, df, bin_division):
     churn_yes = "Churn_Yes"
     percentage_population = "Percentage population"
@@ -71,4 +86,17 @@ for name in column_names_to_drop:
     column_names.remove(name)
 for name in columns_needing_bins:
     column_names.remove(name)
-run_EST(column_names, columns_needing_bins, bins_for_columns, df)
+# run_EST(column_names, columns_needing_bins, bins_for_columns, df)
+
+churn_yes = "Churn_Yes"
+percentage_population = "Percentage population"
+average_churn_rage = "Average churn rate"
+column_names = ['Dependents_Yes','Partner_Yes']
+n = len(df)
+# grouping by column name, counting the occurences and the churn in each group
+table = df.groupby(column_names)[churn_yes].sum()
+table = table.transform(lambda x: round((x/n), 5))
+table = table.unstack()
+print(table)
+
+print(explicative_structure_table_multiple_columns(column_names, df))
