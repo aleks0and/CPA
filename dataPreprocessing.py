@@ -30,6 +30,20 @@ def data_preprocessing(df):
     return df
 
 
+def finding_outliers_for_columns_list(names, df):
+    """ the result is the combined dataset without the outliers from the columns given in the given order"""
+    filter = df
+    for name in names:
+        Q1 = df[name].quantile(0.25)
+        Q3 = df[name].quantile(0.75)
+        IQR = Q3 - Q1
+        print(str(len(filter)) + " observations BEFORE removing outliers")
+        filter = filter.query('(@Q1 - 1.5 * @IQR) <= ' + name + '<= (@Q3 + 1.5 * @IQR)')
+        print(str(len(filter)) + " observations AFTER removing outliers from " + name + " column")
+    return filter
+
+
+
 #path = "TelcoCustomerChurn.csv"
 #df_telco = pd.read_csv(path)
 #df_preprocessed = data_preprocessing(df_telco)
