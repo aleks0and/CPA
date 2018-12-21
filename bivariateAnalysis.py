@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from statsmodels.formula.api import ols
 from utils import load_data
 from dataPreprocessing import data_preprocessing
-
+from LogitRegression_and_plots import descriptive_analysis_of_logit, perform_logit
 pd.set_option('display.max_columns',10)
 
 
@@ -58,26 +58,6 @@ def perform_ols_for_list(df, dv_name, iv_names):
     return sm.stats.anova_lm(regression, typ=2)
 
 
-def perform_logit(df, dv, ivs):
-    logit = sm.Logit(df[dv], df[ivs])
-    result = logit.fit()
-    return result
-
-
-def descriptive_analysis_of_logit(logit_result, df, dv, ivs):
-    print(logit_result.summary2())
-    prediction = np.array([1-logit_result.predict(), logit_result.predict()])
-    #lift curve
-    skplt.metrics.plot_lift_curve(df[dv], prediction.T)
-    plt.show()
-    skplt.metrics.plot_ks_statistic(df[dv], prediction.T)
-    plt.show()
-    skplt.metrics.plot_cumulative_gain(df[dv], prediction.T)
-    plt.show()
-    skplt.metrics.plot_roc_curve(df[dv], prediction.T)
-    plt.show()
-    skplt.metrics.plot_confusion_matrix(df[dv], logit_result.predict() > 0.5)
-    plt.show()
 
 
 path = "TelcoCustomerChurn.csv"

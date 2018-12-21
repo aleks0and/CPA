@@ -1,31 +1,50 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Dec 21 11:37:46 2018
-
-@author: Mac
-"""
-
-import pandas as pd 
+import pandas as pd
 import numpy as np
 import statsmodels.api as sm
+import scikitplot as skplt
+import matplotlib.pyplot as plt
+from dataPreprocessing import data_preprocessing
+from utils import standardize_data
 from sklearn.preprocessing import StandardScaler
+
+
+
+def perform_logit(df, dv, ivs):
+    logit = sm.Logit(df[dv], df[ivs])
+    result = logit.fit()
+    return result
+
+
+def descriptive_analysis_of_logit(logit_result, df, dv, ivs):
+    print(logit_result.summary2())
+    prediction = np.array([1-logit_result.predict(), logit_result.predict()])
+    print(df.describe())
+    #lift curve
+    skplt.metrics.plot_lift_curve(df[dv], prediction.T)
+    plt.show()
+    skplt.metrics.plot_ks_statistic(df[dv], prediction.T)
+    plt.show()
+    skplt.metrics.plot_cumulative_gain(df[dv], prediction.T)
+    plt.show()
+    skplt.metrics.plot_roc_curve(df[dv], prediction.T)
+    plt.show()
+    skplt.metrics.plot_confusion_matrix(df[dv], logit_result.predict() > 0.5)
+    plt.show()
+
+
+
+
 
 #Loading and preparing the data 
 df = pd.read_csv("TelcoCustomerChurn.csv")
-df.head()
-
 df = data_preprocessing(df)
-df = df.drop('customerID', axis=1)
-columns_ = df.columns.tolist()
-stan_df = standardize_data(df, standardization = True)
-stan_df.columns = [columns_]
-descriptives = df.describe()
 
 # Filtering and fitting variables that should be included
-current_var = df.columns.tolist()
-logit_var = [
- 'Churn_Yes',
+logit_dv = 'Churn_Yes'
+# adding an intercept
+df['intercept'] = 1.0
+# selecting desired columns
+logit_ivs = [
  'tenure',
  'SeniorCitizen_Yes',
  'MonthlyCharges',
@@ -38,22 +57,9 @@ logit_var = [
  'TechSupport_Yes',
  'InternetService_DSL',
  'Contract_Month-to-month',
- 'PaymentMethod_Electronic check'
+ 'PaymentMethod_Electronic check',
+ 'intercept'
  ]
-df = df[logit_var]
-# adding an intercept 
-df['intercept'] = 1.0
 
-# Fitting the regression
-ind_var = df.columns[1:]
-logit = sm.Logit(df['Churn_Yes'], df[ind_var])
-result = logit.fit()
-result.summary2()
-    
-# Plotting evaluation statistics
-import scikitplot as skplt
-pred = np.array([1-result.predict(), result.predict()])
-skplt.metrics.plot_lift_curve(df["Churn_Yes"], pred.T)
-skplt.metrics.plot_ks_statistic(df["Churn_Yes"], pred.T)
-skplt.metrics.plot_roc_curve(df["Churn_Yes"], pred.T)
-skplt.metrics.plot_confusion_matrix(df["Churn_Yes"], result.predict() > 0.5)
+logit_result = perform_logit(df, logit_dv, logit_ivs)
+descriptive_analysis_of_logit(logit_result, df, logit_dv, logit_ivs)
