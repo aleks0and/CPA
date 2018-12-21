@@ -76,6 +76,8 @@ plotting_scatter_plot_for_columns(names_to_draw, df)
 # plotting_scatter_plot_for_columns(names_to_draw2, df)
 
 # Visualization for the density for categorical variables
+# does the same work as pie charts but looks a bit different, in this case
+# bandwidth changes the width of the curves -> better to keep it low
 names_to_draw = ['Partner_Yes', 'Dependents_Yes']
 bandwidth = 0.1
 plotting_KDE_plot_for_columns(names_to_draw, df, bandwidth)
