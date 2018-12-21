@@ -3,12 +3,13 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import numpy as np
 from sklearn.metrics import silhouette_samples
+from sklearn.metrics import silhouette_score
 from sklearn.cluster import KMeans
 from scipy.spatial.distance import pdist
 from scipy.cluster.hierarchy import linkage
 from scipy.cluster.hierarchy import dendrogram
 
-from utils import load_data, standardize_data
+from utils import load_data, standardize_data, plot_clusters
 from dataPreprocessing import data_preprocessing
 
 
@@ -61,12 +62,48 @@ def k_means_analysis_with_silhouette_plotting(df, number_of_clusters):
     plt.show()
 
 
+def best_k_for_kmeans_given_data(data):
+    min_cluster = 2
+    max_cluster = 11
+    silhouette_list = []
+    last_best_silhouette_avg = -1
+    last_best_cluster_index = 0
+    range_cluster = [i for i in range(min_cluster, max_cluster)]
+    for clusterI in range_cluster:
+        kmeans_setup = KMeans(n_clusters=clusterI, random_state=10)
+        predicted_clusters = kmeans_setup.fit_predict(data)
+        silhouette_avg = silhouette_score(data, predicted_clusters)
+        silhouette_list.append(silhouette_avg)
+        if silhouette_avg > last_best_silhouette_avg:
+            last_best_silhouette_avg = silhouette_avg
+            last_best_cluster_index = clusterI
+    kmeans_setup = KMeans(n_clusters=last_best_cluster_index, random_state=10)
+    predicted_clusters = kmeans_setup.fit_predict(data)
+    print("best silhouette is for %d clusters" % last_best_cluster_index)
+    print("the value for best silhouette is: " + str(last_best_silhouette_avg))
+    print(silhouette_list)
+    plot_clusters(data, predicted_clusters, kmeans_setup, last_best_cluster_index)
+    return last_best_cluster_index
+
+
+
+
+
 path = "TelcoCustomerChurn.csv"
 df = data_preprocessing(load_data(path))
 # we are dropping id, gender and age variables as they should not be included in cluster analysis
 columns_to_drop = ['customerID', 'SeniorCitizen_Yes', 'gender_Male']
 df = df.drop(columns_to_drop, axis=1)
 df_standardized = standardize_data(df, True)
+
+
 hierarchical_cluster_analysis(df_standardized)
+
+#arbitrarly set number of clusters
 number_of_clusters = 6
 k_means_analysis_with_silhouette_plotting(df_standardized, number_of_clusters)
+
+# using the code from assignment 2 we find the best number of clusters
+best_cluster_number = best_k_for_kmeans_given_data(df_standardized)
+k_means_analysis_with_silhouette_plotting(df_standardized, best_cluster_number)
+print("best number of clusters")
