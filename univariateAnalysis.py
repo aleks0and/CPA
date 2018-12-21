@@ -42,13 +42,35 @@ def plotting_boxplots_for_column_list(names_list, df):
     plt.show()
 
 
+def plotting_scatter_plot_for_columns(names_list,df):
+    names_list.append('Churn_Yes')
+    data_for_scatter = df[names_list]
+    data_for_scatter.plot.scatter(x=names_list[0], y=names_list[1], c=names_list[2],
+                                  colormap='viridis')
+    plt.show()
+
+
+def plotting_KDE_plot_for_columns(names_list,df):
+    data_for_KDE = df[names_list]
+    data_for_KDE.plot.kde()
+    plt.show()
+
 
 path = "TelcoCustomerChurn.csv"
 df = data_preprocessing(load_data(path))
 names = ['tenure', 'MonthlyCharges', 'TotalCharges']
 names_to_drop = names
 names.append('customerID')
-frequency_measure_visualized(df, names_to_drop)
-plotting_histograms_for_column_list(names, df)
-plotting_boxplots_for_column_list(names, df)
-df_without_outliers = finding_outliers_for_columns_list(names, df)
+# frequency_measure_visualized(df, names_to_drop)
+# plotting_histograms_for_column_list(names, df)
+# plotting_boxplots_for_column_list(names, df)
+# df_without_outliers = finding_outliers_for_columns_list(names, df)
+# Works best for continuous variables -> I also added churn yes as the color for markers
+names_to_draw=['tenure', 'TotalCharges']
+plotting_scatter_plot_for_columns(names_to_draw, df)
+# Try with categorical but most likely we can see the last 4 obs plotted.
+# names_to_draw2=['Dependents_Yes', 'Partner_Yes']
+# plotting_scatter_plot_for_columns(names_to_draw2, df)
+# Visualization for the density for categorical variables
+names_to_draw=['Partner_Yes', 'Dependents_Yes']
+plotting_KDE_plot_for_columns(names_to_draw, df)
