@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from utils import load_data
 from dataPreprocessing import data_preprocessing, finding_outliers_for_columns_list
-
+from explicativeStructureTables import explicative_structure_table_with_bins
 
 # this has to be corrected as we dont want to be manually adding senior citizen.
 def frequency_measure_visualized(df, names_to_drop):
@@ -71,9 +71,10 @@ df_without_outliers = finding_outliers_for_columns_list(names_for_outliers_detec
 # Works best for continuous variables -> I also added churn yes as the color for markers
 names_to_draw=['tenure', 'MonthlyCharges']
 plotting_scatter_plot_for_columns(names_to_draw, df)
+
 # Try with categorical but most likely we can see the last 4 obs plotted.
-# names_to_draw2=['Dependents_Yes', 'Partner_Yes']
-# plotting_scatter_plot_for_columns(names_to_draw2, df)
+names_to_draw2=['Dependents_Yes', 'Partner_Yes']
+plotting_scatter_plot_for_columns(names_to_draw2, df)
 
 # Visualization for the density for categorical variables
 # does the same work as pie charts but looks a bit different, in this case
@@ -81,3 +82,10 @@ plotting_scatter_plot_for_columns(names_to_draw, df)
 names_to_draw = ['Partner_Yes', 'Dependents_Yes']
 bandwidth = 0.1
 plotting_KDE_plot_for_columns(names_to_draw, df, bandwidth)
+
+# plotting the churn rate with respect to the bins one by one -> done only for tenure
+# bus same scheme can be applied for all others (we would have to change the range ofc.
+# as for tenure we only have 72 values but for others it goes into thousands
+tenure_bin_split = explicative_structure_table_with_bins('tenure', df, [i for i in range(73)])
+plt.scatter(tenure_bin_split.iloc[:, 2], [i for i in range(73)])
+plt.show()
