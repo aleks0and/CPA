@@ -79,7 +79,8 @@ path = "TelcoCustomerChurn.csv"
 df = data_preprocessing(load_data(path))
 column_names_to_drop = ['Churn_Yes', 'customerID']
 columns_needing_bins = ['tenure', 'MonthlyCharges', 'TotalCharges']
-bins_for_columns = [[0, 3, 10, 20, 35, 50, 65, 72],
+# [0, 3, 10, 20, 35, 50, 65, 72]
+bins_for_columns = [[i for i in range(73)],
                     [18, 28, 48, 68, 108, 119],
                     [18, 100, 300, 1000, 5000, 9000]]
 column_names = list(df)
@@ -87,7 +88,7 @@ for name in column_names_to_drop:
     column_names.remove(name)
 for name in columns_needing_bins:
     column_names.remove(name)
-# run_EST(column_names, columns_needing_bins, bins_for_columns, df)
+run_EST(column_names, columns_needing_bins, bins_for_columns, df)
 
 churn_yes = "Churn_Yes"
 percentage_population = "Percentage population"
