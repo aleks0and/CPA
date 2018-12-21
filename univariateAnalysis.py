@@ -69,7 +69,7 @@ names_for_outliers_detection = ['tenure', 'MonthlyCharges', 'TotalCharges']
 df_without_outliers = finding_outliers_for_columns_list(names_for_outliers_detection, df)
 
 # Works best for continuous variables -> I also added churn yes as the color for markers
-names_to_draw=['tenure', 'TotalCharges']
+names_to_draw=['tenure', 'MonthlyCharges']
 plotting_scatter_plot_for_columns(names_to_draw, df)
 # Try with categorical but most likely we can see the last 4 obs plotted.
 # names_to_draw2=['Dependents_Yes', 'Partner_Yes']
