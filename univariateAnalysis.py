@@ -23,7 +23,7 @@ def plotting_histograms_for_column_list(names_list, df):
     plt.figure(figsize=(10,15))
     plt.subplots_adjust(wspace=1, hspace=1)
     for name in names_list:
-        plt.subplot(3, len(names_list)/3, i+1)
+        plt.subplot(len(names_list), len(names_list)/3, i+1)
         plt.hist(df[name])
         plt.title(name)
         i += 1
@@ -35,7 +35,7 @@ def plotting_boxplots_for_column_list(names_list, df):
     plt.figure(figsize=(10, 15))
     plt.subplots_adjust(wspace=1, hspace=1)
     for name in names_list:
-        plt.subplot(3, len(names_list)/3, i+1)
+        plt.subplot(len(names_list), len(names_list)/3, i+1)
         plt.boxplot(df[name])
         plt.title(name)
         i += 1
@@ -50,27 +50,32 @@ def plotting_scatter_plot_for_columns(names_list,df):
     plt.show()
 
 
-def plotting_KDE_plot_for_columns(names_list,df):
+def plotting_KDE_plot_for_columns(names_list, df, bandwidth):
     data_for_KDE = df[names_list]
-    data_for_KDE.plot.kde()
+    data_for_KDE.plot.kde(bw_method=bandwidth)
     plt.show()
 
 
 path = "TelcoCustomerChurn.csv"
 df = data_preprocessing(load_data(path))
-names = ['tenure', 'MonthlyCharges', 'TotalCharges']
-names_to_drop = names
-names.append('customerID')
-# frequency_measure_visualized(df, names_to_drop)
-# plotting_histograms_for_column_list(names, df)
-# plotting_boxplots_for_column_list(names, df)
-# df_without_outliers = finding_outliers_for_columns_list(names, df)
+names_to_drop = ['tenure', 'MonthlyCharges', 'TotalCharges', 'customerID']
+frequency_measure_visualized(df, names_to_drop)
+
+names_to_plot = ['tenure', 'MonthlyCharges', 'TotalCharges']
+plotting_histograms_for_column_list(names_to_plot, df)
+plotting_boxplots_for_column_list(names_to_plot, df)
+
+names_for_outliers_detection = ['tenure', 'MonthlyCharges', 'TotalCharges']
+df_without_outliers = finding_outliers_for_columns_list(names_for_outliers_detection, df)
+
 # Works best for continuous variables -> I also added churn yes as the color for markers
 names_to_draw=['tenure', 'TotalCharges']
 plotting_scatter_plot_for_columns(names_to_draw, df)
 # Try with categorical but most likely we can see the last 4 obs plotted.
 # names_to_draw2=['Dependents_Yes', 'Partner_Yes']
 # plotting_scatter_plot_for_columns(names_to_draw2, df)
+
 # Visualization for the density for categorical variables
-names_to_draw=['Partner_Yes', 'Dependents_Yes']
-plotting_KDE_plot_for_columns(names_to_draw, df)
+names_to_draw = ['Partner_Yes', 'Dependents_Yes']
+bandwidth = 0.1
+plotting_KDE_plot_for_columns(names_to_draw, df, bandwidth)
