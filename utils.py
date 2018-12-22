@@ -2,7 +2,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib import cm
 from sklearn.preprocessing import StandardScaler
-from dataPreprocessing import data_preprocessing
 
 def load_data(path):
     path = "TelcoCustomerChurn.csv"
@@ -10,11 +9,11 @@ def load_data(path):
     return df_telco
 
 
-def standardize_data(data, standardization):
-    result = data.values
+def standardize_data(data, standardization, column_names):
     if standardization:
-        result = StandardScaler().fit_transform(result)
-    return result
+        for name in column_names:
+            data[name] = StandardScaler().fit_transform(data.loc[:,[name]])
+    return data
 
 
 def standardize_columns(data, standardization, column_names):

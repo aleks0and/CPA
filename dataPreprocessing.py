@@ -1,7 +1,9 @@
 import pandas as pd
+from utils import standardize_data
 
 
 def data_preprocessing(df):
+
     # specifying which columns contain dummy variables
     dummies_names = ['gender', 'Partner', 'Dependents', 'PhoneService', 'PaperlessBilling', 'Churn',
                      'MultipleLines', 'OnlineSecurity', 'OnlineBackup', 'DeviceProtection', 'TechSupport',
@@ -25,8 +27,13 @@ def data_preprocessing(df):
     # converting values from string to numeric values
     total_charges = 'TotalCharges'
     df[total_charges] = pd.to_numeric(df[total_charges], errors='coerce')
+    
+
     # dropping missing values
     df = df.dropna()
+    
+    df = standardize_data(df, standardization = True, column_names = ['tenure','MonthlyCharges','TotalCharges'])
+
     return df
 
 
@@ -44,6 +51,6 @@ def finding_outliers_for_columns_list(names, df):
 
 
 
-#path = "TelcoCustomerChurn.csv"
-#df_telco = pd.read_csv(path)
-#df_preprocessed = data_preprocessing(df_telco)
+path = "TelcoCustomerChurn.csv"
+df_telco = pd.read_csv(path)
+df_preprocessed = data_preprocessing(df_telco)
