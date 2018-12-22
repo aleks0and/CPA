@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from dataPreprocessing import data_preprocessing
 from utils import standardize_data
 from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
 
 
 
@@ -61,5 +62,25 @@ logit_ivs = [
  'intercept'
  ]
 
-logit_result = perform_logit(df, logit_dv, logit_ivs)
-descriptive_analysis_of_logit(logit_result, df, logit_dv, logit_ivs)
+X_train, X_test, y_train, y_test = train_test_split(df[logit_ivs], df[logit_dv], test_size=0.33, random_state=42)
+logit = sm.Logit(y_train, X_train)
+logit_result = logit.fit()
+
+print(logit_result.summary2())
+prediction = np.array([1-logit_result.predict(), logit_result.predict()])
+print(df.describe())
+#lift curve
+skplt.metrics.plot_lift_curve(y_train, prediction.T)
+plt.show()
+skplt.metrics.plot_ks_statistic(y_train, prediction.T)
+plt.show()
+skplt.metrics.plot_cumulative_gain(y_train, prediction.T)
+plt.show()
+skplt.metrics.plot_roc_curve(y_train, prediction.T)
+plt.show()
+skplt.metrics.plot_confusion_matrix(y_train, logit_result.predict() > 0.5)
+plt.show()
+
+
+#logit_result = perform_logit(df, logit_dv, logit_ivs)
+#descriptive_analysis_of_logit(logit_result, df, logit_dv, logit_ivs)
