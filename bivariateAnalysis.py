@@ -61,38 +61,38 @@ def perform_ols_for_list(df, dv_name, iv_names):
 
 
 
-path = "TelcoCustomerChurn.csv"
-df = data_preprocessing(load_data(path))
-# The reference variable is Churn, which is qualitative. For this reason we will have to use ANOVA when comparing it
-# with a quantitative variable and the contingency table when comparing it with a qualitative variable.
-column_reference = "Churn_Yes"
-# here just insert the names you want to drop from the overall columns and it will do its magic
-# names_to_drop = ['tenure', 'MonthlyCharges', 'TotalCharges', 'customerID', 'Churn_Yes']
-# names_to_drop = set(names_to_drop)
-# names = [x for x in list(df) if x not in names_to_drop]
-# in other case just insert the columns you want tables for below.
-df.rename(index=str,
-          columns={'Contract_Month-to-month': 'Contract_Monthly',
-                   'PaymentMethod_Electronic check': 'PaymentMethod_Electronic',
-                   'InternetService_Fiber optic': 'InternetService_Fiber'},
-          inplace=True)
-names = ['tenure',
-         'Contract_Monthly',
-         'PaymentMethod_Electronic',
-         'MonthlyCharges',
-         'InternetService_Fiber',
-         'SeniorCitizen_Yes']
-contingency_table_for_list_print_pretty(df, column_reference, names)
-# contingency_table_for_list_print_ugly(df, column_reference, names)
-# ANOVA analysis
-dv_name = column_reference
-iv_names = names
-regression = perform_ols_for_list(df, dv_name, iv_names)
-print_anova_table(regression)
-# Heatmap for the correlation between variables
-sns.heatmap(df.corr())
-plt.show()
-# corelation between monthly charges, total charges and tenure
-names = ['tenure', 'MonthlyCharges', 'TotalCharges']
-sns.heatmap(df[names].corr())
-plt.show()
+# path = "TelcoCustomerChurn.csv"
+# df = data_preprocessing(load_data(path),standardize=True)
+# # The reference variable is Churn, which is qualitative. For this reason we will have to use ANOVA when comparing it
+# # with a quantitative variable and the contingency table when comparing it with a qualitative variable.
+# column_reference = "Churn_Yes"
+# # here just insert the names you want to drop from the overall columns and it will do its magic
+# # names_to_drop = ['tenure', 'MonthlyCharges', 'TotalCharges', 'customerID', 'Churn_Yes']
+# # names_to_drop = set(names_to_drop)
+# # names = [x for x in list(df) if x not in names_to_drop]
+# # in other case just insert the columns you want tables for below.
+# df.rename(index=str,
+#           columns={'Contract_Month-to-month': 'Contract_Monthly',
+#                    'PaymentMethod_Electronic check': 'PaymentMethod_Electronic',
+#                    'InternetService_Fiber optic': 'InternetService_Fiber'},
+#           inplace=True)
+# names = ['tenure',
+#          'Contract_Monthly',
+#          'PaymentMethod_Electronic',
+#          'MonthlyCharges',
+#          'InternetService_Fiber',
+#          'SeniorCitizen_Yes']
+# contingency_table_for_list_print_pretty(df, column_reference, names)
+# # contingency_table_for_list_print_ugly(df, column_reference, names)
+# # ANOVA analysis
+# dv_name = column_reference
+# iv_names = names
+# regression = perform_ols_for_list(df, dv_name, iv_names)
+# print_anova_table(regression)
+# # Heatmap for the correlation between variables
+# sns.heatmap(df.corr())
+# plt.show()
+# # corelation between monthly charges, total charges and tenure
+# names = ['tenure', 'MonthlyCharges', 'TotalCharges']
+# sns.heatmap(df[names].corr())
+# plt.show()

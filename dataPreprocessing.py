@@ -2,7 +2,7 @@ import pandas as pd
 from utils import standardize_data
 
 
-def data_preprocessing(df):
+def data_preprocessing(df, standardize = False):
 
     # specifying which columns contain dummy variables
     dummies_names = ['gender', 'Partner', 'Dependents', 'PhoneService', 'PaperlessBilling', 'Churn',
@@ -30,11 +30,12 @@ def data_preprocessing(df):
     
 
     # dropping missing values
-    # only missing values that are in the dataset
-    df = df.dropna()
+    # only missing values that are in the dataset are in TotalCharges columns,
+    # which we do not use, so we are not dropping any missing values
+    # df = df.dropna()
 
-
-    df = standardize_data(df, standardization = True, column_names = ['tenure','MonthlyCharges','TotalCharges'])
+    if standardize:
+        df = standardize_data(df, standardization = True, column_names = ['tenure', 'MonthlyCharges', 'TotalCharges'])
 
     return df
 
@@ -53,6 +54,6 @@ def finding_outliers_for_columns_list(names, df):
 
 
 
-path = "TelcoCustomerChurn.csv"
-df_telco = pd.read_csv(path)
-df_preprocessed = data_preprocessing(df_telco)
+# path = "TelcoCustomerChurn.csv"
+# df_telco = pd.read_csv(path)
+# df_preprocessed = data_preprocessing(df_telco)

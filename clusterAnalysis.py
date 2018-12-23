@@ -87,30 +87,30 @@ def best_k_for_kmeans_given_data(data):
 
 
 
-
-
-path = "TelcoCustomerChurn.csv"
-df = data_preprocessing(load_data(path))
-# we are dropping id, gender and age variables as they should not be included in cluster analysis
-# columns_to_drop = ['customerID', 'SeniorCitizen_Yes', 'gender_Male']
-# df = df.drop(columns_to_drop, axis=1)
-# df_standardized = standardize_data(df, True)
-columns_for_clustering = ['tenure',
-                          'Contract_Month-to-month',
-                          'PaymentMethod_Electronic check',
-                          'MonthlyCharges',
-                          'InternetService_Fiber optic']
-df = df[columns_for_clustering]
-df = standardize_data(df, True, columns_for_clustering)
-
-hierarchical_cluster_analysis(df)
-
-
-# testing with arbitrarly set number of clusters
-# number_of_clusters = 6
-# k_means_analysis_with_silhouette_plotting(df, number_of_clusters)
-
-# using the code from assignment 2 we find the best number of clusters
-best_cluster_number = best_k_for_kmeans_given_data(df)
-k_means_analysis_with_silhouette_plotting(df, best_cluster_number)
-print("best number of clusters")
+#
+#
+# path = "TelcoCustomerChurn.csv"
+# df = data_preprocessing(load_data(path), standardize=True)
+# # we are dropping id, gender and age variables as they should not be included in cluster analysis
+# # columns_to_drop = ['customerID', 'SeniorCitizen_Yes', 'gender_Male']
+# # df = df.drop(columns_to_drop, axis=1)
+# # df_standardized = standardize_data(df, True)
+# columns_for_clustering = ['tenure',
+#                           'Contract_Month-to-month',
+#                           'PaymentMethod_Electronic check',
+#                           'MonthlyCharges',
+#                           'InternetService_Fiber optic']
+# df = df[columns_for_clustering]
+# df = standardize_data(df, True, columns_for_clustering)
+#
+# hierarchical_cluster_analysis(df)
+#
+#
+# # testing with arbitrarly set number of clusters
+# # number_of_clusters = 6
+# # k_means_analysis_with_silhouette_plotting(df, number_of_clusters)
+#
+# # using the code from assignment 2 we find the best number of clusters
+# best_cluster_number = best_k_for_kmeans_given_data(df)
+# k_means_analysis_with_silhouette_plotting(df, best_cluster_number)
+# print("best number of clusters")

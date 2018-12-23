@@ -1,4 +1,5 @@
 import pandas as pd
+import matplotlib.pyplot as plt
 pd.set_option('display.max_columns',10)
 from dataPreprocessing import data_preprocessing
 from utils import load_data
@@ -67,7 +68,10 @@ def ranges_string_creation(range_list):
 def run_EST(column_list, columns_needing_bins, bins, df):
     for column in column_list:
         print("creating explicative structure table for {}", column)
-        print(explicative_structure_table(column, df))
+        table = explicative_structure_table(column, df)
+        print(table)
+        # graph = table.plot.bar(x=column, y='Average churn rate', rot=0, color=(0.11, 0.7, 0.7))
+        # plt.show()
 
     for i in range(len(columns_needing_bins)):
         print("Explicative structure table for ", columns_needing_bins[i])
@@ -75,22 +79,22 @@ def run_EST(column_list, columns_needing_bins, bins, df):
 
 
 # TESTING
-path = "TelcoCustomerChurn.csv"
-df = data_preprocessing(load_data(path))
-column_names_to_drop = ['Churn_Yes', 'customerID']
-columns_needing_bins = ['tenure', 'MonthlyCharges', 'TotalCharges']
-# [0, 3, 10, 20, 35, 50, 65, 72]
-bins_for_columns = [[i for i in range(73)],
-                    [18, 28, 48, 68, 108, 119],
-                    [18, 100, 300, 1000, 5000, 9000]]
-column_names = list(df)
-for name in column_names_to_drop:
-    column_names.remove(name)
-# for this to run correctly we need to comment out the standardization in data preprocessing.
-for name in columns_needing_bins:
-    column_names.remove(name)
-run_EST(column_names, columns_needing_bins, bins_for_columns, df)
-
-column_names = ['Dependents_Yes', 'Partner_Yes']
-# grouping by column name, counting the occurences and the churn in category
-print(explicative_structure_table_multiple_columns(column_names, df))
+# path = "TelcoCustomerChurn.csv"
+# df = data_preprocessing(load_data(path))
+# column_names_to_drop = ['Churn_Yes', 'customerID']
+# columns_needing_bins = ['tenure', 'MonthlyCharges', 'TotalCharges']
+# # [0, 3, 10, 20, 35, 50, 65, 72]
+# bins_for_columns = [[i for i in range(73)],
+#                     [18, 28, 48, 68, 108, 119],
+#                     [18, 100, 300, 1000, 5000, 9000]]
+# column_names = list(df)
+# for name in column_names_to_drop:
+#     column_names.remove(name)
+# # for this to run correctly we need to comment out the standardization in data preprocessing.
+# for name in columns_needing_bins:
+#     column_names.remove(name)
+# run_EST(column_names, columns_needing_bins, bins_for_columns, df)
+#
+# column_names = ['Dependents_Yes', 'Partner_Yes']
+# # grouping by column name, counting the occurences and the churn in category
+# print(explicative_structure_table_multiple_columns(column_names, df))
