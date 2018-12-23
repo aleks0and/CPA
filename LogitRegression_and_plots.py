@@ -45,13 +45,16 @@ logit_dv = 'Churn_Yes'
 # adding an intercept
 df['intercept'] = 1.0
 df["tenure2"] = df["tenure"] ** 2
+df["MonthlyCharges2"] = df["MonthlyCharges"] ** 2
+df["MonthlyCharges3"] = df["MonthlyCharges"] ** 3
+
 # selecting desired columns
 logit_ivs = [
  'tenure',
  'tenure2',
+ 'MonthlyCharges3',
  'SeniorCitizen_Yes',
  'MonthlyCharges',
- 'TotalCharges',
  'PaperlessBilling_Yes',
  'OnlineSecurity_Yes',
  'TechSupport_Yes',
