@@ -86,18 +86,11 @@ bins_for_columns = [[i for i in range(73)],
 column_names = list(df)
 for name in column_names_to_drop:
     column_names.remove(name)
+# for this to run correctly we need to comment out the standardization in data preprocessing.
 for name in columns_needing_bins:
     column_names.remove(name)
 run_EST(column_names, columns_needing_bins, bins_for_columns, df)
 
-churn_yes = "Churn_Yes"
-percentage_population = "Percentage population"
-average_churn_rage = "Average churn rate"
 column_names = ['Dependents_Yes', 'Partner_Yes']
-n = len(df)
-# grouping by column name, counting the occurences and the churn in each group
-table = df.groupby(column_names)[churn_yes].sum()
-table = table.transform(lambda x: round((x/n), 5))
-table = table.unstack()
-print(table)
+# grouping by column name, counting the occurences and the churn in category
 print(explicative_structure_table_multiple_columns(column_names, df))

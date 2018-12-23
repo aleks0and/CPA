@@ -1,6 +1,7 @@
 import statsmodels.api as sm
 import scipy as sci
 import numpy as np
+import seaborn as sns
 import pandas as pd
 import scikitplot as skplt
 import matplotlib.pyplot as plt
@@ -70,16 +71,28 @@ column_reference = "Churn_Yes"
 # names_to_drop = set(names_to_drop)
 # names = [x for x in list(df) if x not in names_to_drop]
 # in other case just insert the columns you want tables for below.
-names = ["SeniorCitizen_Yes"]
+df.rename(index=str,
+          columns={'Contract_Month-to-month': 'Contract_Monthly',
+                   'PaymentMethod_Electronic check': 'PaymentMethod_Electronic',
+                   'InternetService_Fiber optic': 'InternetService_Fiber'},
+          inplace=True)
+names = ['tenure',
+         'Contract_Monthly',
+         'PaymentMethod_Electronic',
+         'MonthlyCharges',
+         'InternetService_Fiber',
+         'SeniorCitizen_Yes']
 contingency_table_for_list_print_pretty(df, column_reference, names)
-contingency_table_for_list_print_ugly(df, column_reference, names)
+# contingency_table_for_list_print_ugly(df, column_reference, names)
 # ANOVA analysis
 dv_name = column_reference
-iv_names = ['tenure', 'MonthlyCharges', 'TotalCharges']
+iv_names = names
 regression = perform_ols_for_list(df, dv_name, iv_names)
 print_anova_table(regression)
-# Logistic regression and its results plotting
-logit_dv_name = dv_name
-logit_ivs_names = ['SeniorCitizen_Yes', 'TotalCharges']
-logit_result = perform_logit(df, dv_name, iv_names)
-descriptive_analysis_of_logit(logit_result, df, logit_dv_name, logit_ivs_names)
+# Heatmap for the correlation between variables
+sns.heatmap(df.corr())
+plt.show()
+# corelation between monthly charges, total charges and tenure
+names = ['tenure', 'MonthlyCharges', 'TotalCharges']
+sns.heatmap(df[names].corr())
+plt.show()

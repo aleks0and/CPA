@@ -30,8 +30,10 @@ def data_preprocessing(df):
     
 
     # dropping missing values
+    # only missing values that are in the dataset
     df = df.dropna()
-    
+
+
     df = standardize_data(df, standardization = True, column_names = ['tenure','MonthlyCharges','TotalCharges'])
 
     return df

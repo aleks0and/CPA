@@ -73,8 +73,8 @@ names_to_draw=['tenure', 'MonthlyCharges']
 plotting_scatter_plot_for_columns(names_to_draw, df)
 
 # Try with categorical but most likely we can see the last 4 obs plotted.
-names_to_draw2=['Dependents_Yes', 'Partner_Yes']
-plotting_scatter_plot_for_columns(names_to_draw2, df)
+# names_to_draw2=['Dependents_Yes', 'Partner_Yes']
+# plotting_scatter_plot_for_columns(names_to_draw2, df)
 
 # Visualization for the density for categorical variables
 # does the same work as pie charts but looks a bit different, in this case
@@ -83,9 +83,11 @@ names_to_draw = ['Partner_Yes', 'Dependents_Yes']
 bandwidth = 0.1
 plotting_KDE_plot_for_columns(names_to_draw, df, bandwidth)
 
-# plotting the churn rate with respect to the bins one by one -> done only for tenure
-# bus same scheme can be applied for all others (we would have to change the range ofc.
-# as for tenure we only have 72 values but for others it goes into thousands
+# plotting the churn rate with respect to the bins one by one -> done for both continous variables
 tenure_bin_split = explicative_structure_table_with_bins('tenure', df, [i for i in range(73)])
 plt.scatter(tenure_bin_split.iloc[:, 2], [i for i in range(73)])
+plt.show()
+
+monthly_bin_split = explicative_structure_table_with_bins('MonthlyCharges', df, [i for i in range(120)])
+plt.scatter(monthly_bin_split.iloc[:, 2], [i for i in range(120)])
 plt.show()
