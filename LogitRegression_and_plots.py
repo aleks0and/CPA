@@ -85,3 +85,7 @@ plt.show()
 
 #logit_result = perform_logit(df, logit_dv, logit_ivs)
 #descriptive_analysis_of_logit(logit_result, df, logit_dv, logit_ivs)
+
+gamma_model = sm.GLM(y_train, X_train, family=sm.families.Gamma())
+gamma_results = gamma_model.fit()
+print(gamma_results.summary())
