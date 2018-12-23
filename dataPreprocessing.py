@@ -1,4 +1,5 @@
 import pandas as pd
+pd.set_option('display.max_columns', 30)
 from utils import standardize_data
 
 
@@ -53,7 +54,19 @@ def finding_outliers_for_columns_list(names, df):
     return filter
 
 
-
+#
 # path = "TelcoCustomerChurn.csv"
 # df_telco = pd.read_csv(path)
 # df_preprocessed = data_preprocessing(df_telco)
+# column_names_to_drop = ['Churn_Yes', 'customerID', 'TotalCharges', 'tenure', 'MonthlyCharges']
+# column_dummy_names = list(df_preprocessed)
+# # double check for string values
+# for name in column_names_to_drop:
+#     column_dummy_names.remove(name)
+# print(df_preprocessed.describe())
+# for name in column_dummy_names:
+#     check = df_preprocessed[name]
+#     df_preprocessed[name].replace(to_replace='Yes', value=1, inplace=True)
+#     df_preprocessed[name].replace(to_replace='No', value=0, inplace=True)
+#     check.append(df_preprocessed[name])
+#     #print(check)

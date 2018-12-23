@@ -50,41 +50,41 @@ def descriptive_analysis_of_logit_given_dataset(logit_result, data, df):
     plt.show()
 
 
-#
-#
-# #Loading and preparing the data
-# df = pd.read_csv("TelcoCustomerChurn.csv")
-# df = data_preprocessing(df, standardize=True)
-#
-# # Filtering and fitting variables that should be included
-# logit_dv = 'Churn_Yes'
-# # adding an intercept
-# df['intercept'] = 1.0
-# df["tenure2"] = df["tenure"] ** 2
-# df["MonthlyCharges2"] = df["MonthlyCharges"] ** 2
-# df["MonthlyCharges3"] = df["MonthlyCharges"] ** 3
-#
-# # selecting desired columns
-# logit_ivs = [
-#  'tenure',
-#  'tenure2',
-#  'MonthlyCharges',
-#  'MonthlyCharges3',
-#  'SeniorCitizen_Yes',
-#  'InternetService_Fiber optic',
-#  'Contract_Month-to-month',
-#  'PaymentMethod_Electronic check',
-#  'intercept'
-#  ]
-#
-# X_train, X_test, y_train, y_test = train_test_split(df[logit_ivs], df[logit_dv], test_size=0.30, random_state=42)
-# logit = sm.Logit(y_train, X_train)
-# logit_result = logit.fit()
-#
-# print(logit_result.summary2())
-# prediction = np.array([1-logit_result.predict(), logit_result.predict()])
-# print(df.describe())
-# #lift curve
+
+
+#Loading and preparing the data
+df = pd.read_csv("TelcoCustomerChurn.csv")
+df = data_preprocessing(df, standardize=True)
+
+# Filtering and fitting variables that should be included
+logit_dv = 'Churn_Yes'
+# adding an intercept
+df['intercept'] = 1.0
+df["tenure2"] = df["tenure"] ** 2
+df["MonthlyCharges2"] = df["MonthlyCharges"] ** 2
+df["MonthlyCharges3"] = df["MonthlyCharges"] ** 3
+
+# selecting desired columns
+logit_ivs = [
+ 'tenure',
+ 'tenure2',
+ 'MonthlyCharges',
+ 'MonthlyCharges3',
+ 'SeniorCitizen_Yes',
+ 'InternetService_Fiber optic',
+ 'Contract_Month-to-month',
+ 'PaymentMethod_Electronic check',
+ 'intercept'
+ ]
+
+X_train, X_test, y_train, y_test = train_test_split(df[logit_ivs], df[logit_dv], test_size=0.30, random_state=42)
+logit = sm.Logit(y_train, X_train)
+logit_result = logit.fit()
+
+print(logit_result.summary2())
+prediction = np.array([1-logit_result.predict(), logit_result.predict()])
+print(df.describe())
+#lift curve
 # skplt.metrics.plot_lift_curve(y_train, prediction.T)
 # plt.show()
 # skplt.metrics.plot_ks_statistic(y_train, prediction.T)
@@ -95,11 +95,11 @@ def descriptive_analysis_of_logit_given_dataset(logit_result, data, df):
 # plt.show()
 # skplt.metrics.plot_confusion_matrix(y_train, logit_result.predict() > 0.5)
 # plt.show()
-#
-#
-# #logit_result = perform_logit(df, logit_dv, logit_ivs)
-# #descriptive_analysis_of_logit(logit_result, df, logit_dv, logit_ivs)
-#
-# gamma_model = sm.GLM(y_train, X_train, family=sm.families.Gamma())
-# gamma_results = gamma_model.fit()
-# print(gamma_results.summary())
+
+
+#logit_result = perform_logit(df, logit_dv, logit_ivs)
+#descriptive_analysis_of_logit(logit_result, df, logit_dv, logit_ivs)
+
+gamma_model = sm.GLM(y_train, X_train, family=sm.families.Gamma())
+gamma_results = gamma_model.fit()
+print(gamma_results.summary())

@@ -136,6 +136,7 @@ def main():
     logit_dv = 'Churn_Yes'
     # adding an intercept
     df['intercept'] = 1.0
+    # calculating the powers of continous variables to capture their change
     df["tenure2"] = df["tenure"] ** 2
     df["MonthlyCharges2"] = df["MonthlyCharges"] ** 2
     df["MonthlyCharges3"] = df["MonthlyCharges"] ** 3
@@ -145,7 +146,6 @@ def main():
         'tenure',
         'tenure2',
         'MonthlyCharges',
-        'MonthlyCharges3',
         'SeniorCitizen_Yes',
         'InternetService_Fiber optic',
         'Contract_Month-to-month',
@@ -153,12 +153,12 @@ def main():
         'intercept'
     ]
 
-    X_train, X_test, y_train, y_test = train_test_split(df[logit_ivs], df[logit_dv], test_size=0.30, random_state=42)
-    logit = sm.Logit(y_train, X_train)
+    x_train, x_test, y_train, y_test = train_test_split(df[logit_ivs], df[logit_dv], test_size=0.30, random_state=42)
+    logit = sm.Logit(y_train, x_train)
     logit_result = logit.fit()
     descriptive_analysis_of_logit_given_dataset(logit_result, y_train, df)
     # running GLM
-    gamma_model = sm.GLM(y_train, X_train, family=sm.families.Gamma())
+    gamma_model = sm.GLM(y_train, x_train, family=sm.families.Gamma())
     gamma_results = gamma_model.fit()
     print(gamma_results.summary())
 
