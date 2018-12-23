@@ -55,12 +55,12 @@ def plotting_KDE_plot_for_columns(names_list, df, bandwidth):
     data_for_KDE.plot.kde(bw_method=bandwidth)
     plt.show()
 
-
+#
 # path = "TelcoCustomerChurn.csv"
 # df = data_preprocessing(load_data(path))
 # names_to_drop = ['tenure', 'MonthlyCharges', 'TotalCharges', 'customerID']
 # frequency_measure_visualized(df, names_to_drop)
-#
+
 # names_to_plot = ['tenure', 'MonthlyCharges', 'TotalCharges']
 # plotting_histograms_for_column_list(names_to_plot, df)
 # plotting_boxplots_for_column_list(names_to_plot, df)
@@ -82,13 +82,19 @@ def plotting_KDE_plot_for_columns(names_list, df, bandwidth):
 # names_to_draw = ['Partner_Yes', 'Dependents_Yes']
 # bandwidth = 0.1
 # plotting_KDE_plot_for_columns(names_to_draw, df, bandwidth)
-#
-# # plotting the churn rate with respect to the bins one by one -> done for both continous variables
-# # also this should be run before standardizing the data
+
+# plotting the churn rate with respect to the bins one by one -> done for both continous variables
+# also this should be run before standardizing the data
 # tenure_bin_split = explicative_structure_table_with_bins('tenure', df, [i for i in range(73)])
-# plt.scatter(tenure_bin_split.iloc[:, 2], [i for i in range(73)])
+# plt.scatter([i for i in range(73)], tenure_bin_split.iloc[:, 2], c=(0.11, 0.7, 0.7))
+# plt.xlabel("Average churn rate")
+# plt.ylabel("Tenure")
+# plt.legend(loc='upper right')
 # plt.show()
 #
 # monthly_bin_split = explicative_structure_table_with_bins('MonthlyCharges', df, [i for i in range(120)])
-# plt.scatter(monthly_bin_split.iloc[:, 2], [i for i in range(120)])
+# plt.scatter(monthly_bin_split.iloc[:, 2], [i for i in range(120)], c=(0.11, 0.7, 0.7))
+# plt.xlabel("Average Churn Rate")
+# plt.ylabel("Monthly charges")
+# plt.legend(loc='upper right')
 # plt.show()

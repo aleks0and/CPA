@@ -63,11 +63,17 @@ def main():
     # plotting the churn rate with respect to the bins one by one -> done for both continous variables
     # also this should be run before standardizing the data
     tenure_bin_split = explicative_structure_table_with_bins('tenure', df, [i for i in range(73)])
-    plt.scatter(tenure_bin_split.iloc[:, 2], [i for i in range(73)])
+    plt.scatter([i for i in range(73)], tenure_bin_split.iloc[:, 2], c=(0.11, 0.7, 0.7))
+    plt.xlabel("Average churn rate")
+    plt.ylabel("Tenure")
+    plt.legend(loc='upper right')
     plt.show()
 
     monthly_bin_split = explicative_structure_table_with_bins('MonthlyCharges', df, [i for i in range(120)])
-    plt.scatter(monthly_bin_split.iloc[:, 2], [i for i in range(120)])
+    plt.scatter(monthly_bin_split.iloc[:, 2], [i for i in range(120)], c=(0.11, 0.7, 0.7))
+    plt.xlabel("Average Churn Rate")
+    plt.ylabel("Monthly charges")
+    plt.legend(loc='upper right')
     plt.show()
 
     # BIVARIATE ANALYSIS
