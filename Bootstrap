@@ -1,0 +1,55 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from statsmodels.distributions.empirical_distribution import ECDF
+import scipy.stats  as stats
+import random
+import seaborn as sns
+import math
+from scipy.optimize import minimize, show_options
+import matplotlib.mlab as mlab 
+from numpy import random 
+
+df = pd.read_csv("TelcoCustomerChurn.csv")
+df = data_preprocessing(df)
+
+# Splitting the training set 
+X_train, X_test, y_train, y_test = train_test_split(df[logit_ivs], df[logit_dv], test_size=0.30, random_state=42)
+logit = sm.Logit(y_train, X_train)
+logit_result = logit.fit()
+print(logit_result.summary2())
+
+# Defining the bootstrap function
+def pair_bootstrap(df,size=1):   
+    inds = np.arange(len(df))
+    
+    y = df['Churn_Yes']
+    a = df['tenure']
+    b = df['tenure2']
+    c = df['MonthlyCharges3']
+    d = df['SeniorCitizen_Yes']
+    e = df['MonthlyCharges']
+    f = df['Contract_Month-to-month']
+    g = df['PaymentMethod_Electronic check']
+    h = df['intercept']
+    list_ = [a, b, c, d, e, f, g, h]
+
+    # Initialize replicates: bs_slope_reps, bs_intercept_reps
+    for i in list_:
+        bs_slope_reps[i] = np.empty(size)
+        bs_intercept_reps = np.empty(size)
+
+    # Generate replicates
+    for i in range(size):
+        bs_inds = np.random.choice(inds, size=len(inds))
+        for j in list_:
+            bs_[j] = j[bs_inds]
+        bs_y = y[bs_inds]
+        logit = sm.Logit(bs_y, bs_[i] for i in list_)
+        logit_result = logit.fit()
+        sum = logit_result.summary2()
+
+    return sum 
+
+
+pair_boostrap(df)
