@@ -44,25 +44,23 @@ df = data_preprocessing(df)
 logit_dv = 'Churn_Yes'
 # adding an intercept
 df['intercept'] = 1.0
+df["tenure2"] = df["tenure"] ** 2
 # selecting desired columns
 logit_ivs = [
  'tenure',
+ 'tenure2',
  'SeniorCitizen_Yes',
  'MonthlyCharges',
  'TotalCharges',
- 'gender_Male',
- 'Dependents_Yes',
  'PaperlessBilling_Yes',
  'OnlineSecurity_Yes',
- 'DeviceProtection_Yes',
  'TechSupport_Yes',
- 'InternetService_DSL',
  'Contract_Month-to-month',
  'PaymentMethod_Electronic check',
  'intercept'
  ]
 
-X_train, X_test, y_train, y_test = train_test_split(df[logit_ivs], df[logit_dv], test_size=0.33, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(df[logit_ivs], df[logit_dv], test_size=0.30, random_state=42)
 logit = sm.Logit(y_train, X_train)
 logit_result = logit.fit()
 
