@@ -93,7 +93,7 @@ def main():
              'SeniorCitizen_Yes']
     
     names_anova = ['tenure',
-             'Contract_Monthly']
+             'MonthlyCharges']
     
     contingency_table_for_list_print_pretty(df, column_reference, names_cramer) 
     # ANOVA analysis 
