@@ -78,7 +78,7 @@ def run_EST(column_list, columns_needing_bins, bins, df):
         print(explicative_structure_table_with_bins(columns_needing_bins[i], df, bins[i]))
 
 
-# ============================================TESTING=======================================================
+# TESTING
 # path = "TelcoCustomerChurn.csv"
 # df = data_preprocessing(load_data(path))
 # column_names_to_drop = ['Churn_Yes', 'customerID']

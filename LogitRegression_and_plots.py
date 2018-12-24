@@ -52,7 +52,8 @@ def descriptive_analysis_of_logit_given_dataset(logit_result, data_y, data_x, df
     plt.show()
 
 
-# ============================================TESTING=======================================================
+
+#
 # #Loading and preparing the data
 # df = pd.read_csv("TelcoCustomerChurn.csv")
 # df = data_preprocessing(df, standardize=True)

@@ -59,7 +59,8 @@ def perform_ols_for_list(df, dv_name, iv_names):
     return sm.stats.anova_lm(regression, typ=2)
 
 
-# ============================================TESTING=======================================================
+
+
 # path = "TelcoCustomerChurn.csv"
 # df = data_preprocessing(load_data(path),standardize=True)
 # # The reference variable is Churn, which is qualitative. For this reason we will have to use ANOVA when comparing it

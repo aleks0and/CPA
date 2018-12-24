@@ -52,7 +52,6 @@ def k_means_analysis_with_silhouette_plotting(df, number_of_clusters):
         y_ax_lower += len(c_silhouette_vals)
 
     silhouette_avg = np.mean(silhouette_vals)
-    print(silhouette_avg)
     plt.axvline(silhouette_avg, color="red", linestyle="--")
 
     plt.yticks(yticks, cluster_labels + 1)
@@ -61,43 +60,6 @@ def k_means_analysis_with_silhouette_plotting(df, number_of_clusters):
 
     plt.tight_layout()
     plt.show()
-
-
-def k_means_analysis_returning_ykm(df, number_of_clusters):
-    km = KMeans(n_clusters=number_of_clusters, init='k-means++', n_init=10, max_iter=300, tol=1e-04, random_state=0)
-    # To me it looks like clusters should be either 3 or 6
-    y_km = km.fit_predict(df)
-    cluster_labels = np.unique(y_km)
-    n_clusters = cluster_labels.shape[0]
-
-    # Creating the silhouette plot
-    silhouette_vals = silhouette_samples(df, y_km, metric='euclidean')
-    y_ax_lower, y_ax_upper = 0, 0
-    yticks = []
-    plt.figure(figsize=(10, 15))
-    for i, c in enumerate(cluster_labels):
-        c_silhouette_vals = silhouette_vals[y_km == c]
-        c_silhouette_vals.sort()
-        y_ax_upper += len(c_silhouette_vals)
-        color = cm.jet(float(i) / n_clusters)
-        plt.barh(range(y_ax_lower, y_ax_upper), c_silhouette_vals, height=1.0,
-                 edgecolor='none', color=color)
-
-        yticks.append((y_ax_lower + y_ax_upper) / 2.)
-        y_ax_lower += len(c_silhouette_vals)
-
-    silhouette_avg = np.mean(silhouette_vals)
-    print(silhouette_avg)
-    plt.axvline(silhouette_avg, color="red", linestyle="--")
-
-    plt.yticks(yticks, cluster_labels + 1)
-    plt.ylabel('Cluster')
-    plt.xlabel('Silhouette coefficient')
-
-    plt.tight_layout()
-    plt.show()
-    df['y_km'] = y_km
-    return df
 
 
 def best_k_for_kmeans_given_data(data):
@@ -124,7 +86,9 @@ def best_k_for_kmeans_given_data(data):
     return last_best_cluster_index
 
 
-# ============================================TESTING=======================================================
+
+#
+#
 # path = "TelcoCustomerChurn.csv"
 # df = data_preprocessing(load_data(path), standardize=True)
 # # we are dropping id, gender and age variables as they should not be included in cluster analysis
