@@ -87,16 +87,18 @@ def main():
                        'PaymentMethod_Electronic check': 'PaymentMethod_Electronic',
                        'InternetService_Fiber optic': 'InternetService_Fiber'},
               inplace=True)
-    names = ['tenure',
-             'Contract_Monthly',
+    names_cramer = ['Contract_Monthly',
              'PaymentMethod_Electronic',
-             'MonthlyCharges',
              'InternetService_Fiber',
              'SeniorCitizen_Yes']
-    contingency_table_for_list_print_pretty(df, column_reference, names)
-    # ANOVA analysis
+    
+    names_anova = ['tenure',
+             'Contract_Monthly']
+    
+    contingency_table_for_list_print_pretty(df, column_reference, names_cramer) 
+    # ANOVA analysis 
     dv_name = column_reference
-    iv_names = names
+    iv_names = names_anova
     regression = perform_ols_for_list(df, dv_name, iv_names)
     print_anova_table(regression)
     # Heatmap for the correlation between variables
