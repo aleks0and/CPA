@@ -51,6 +51,7 @@ def plot_clusters(data, predicted_clusters, initialized_kmeans, number_of_cluste
     plt.show()
 
 
+# ============================================TESTING=======================================================
 # path = "TelcoCustomerChurn.csv"
 # df_telco = pd.read_csv(path)
 # df_preprocessed = data_preprocessing(df_telco)

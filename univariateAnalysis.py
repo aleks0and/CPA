@@ -55,7 +55,7 @@ def plotting_KDE_plot_for_columns(names_list, df, bandwidth):
     data_for_KDE.plot.kde(bw_method=bandwidth)
     plt.show()
 
-
+# ============================================TESTING=======================================================
 # path = "TelcoCustomerChurn.csv"
 # df = data_preprocessing(load_data(path))
 # names_to_drop = ['tenure', 'MonthlyCharges', 'TotalCharges', 'customerID']
