@@ -36,7 +36,7 @@ def data_preprocessing(df, standardize = False):
     # df = df.dropna()
 
     if standardize:
-        df = standardize_data(df, standardization = True, column_names = ['tenure', 'MonthlyCharges', 'TotalCharges'])
+        df = standardize_data(df, standardization = True, column_names = ['tenure', 'MonthlyCharges'])
 
     return df
 

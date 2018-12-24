@@ -4,6 +4,7 @@ import seaborn as sns
 import numpy as np
 import scikitplot as skplt
 import statsmodels.api as sm
+from sklearn.linear_model import LogisticRegression
 from dataPreprocessing import data_preprocessing, standardize_data
 from univariateAnalysis import frequency_measure_visualized, plotting_histograms_for_column_list, plotting_boxplots_for_column_list
 from univariateAnalysis import finding_outliers_for_columns_list, plotting_scatter_plot_for_columns, plotting_KDE_plot_for_columns
@@ -152,12 +153,17 @@ def main():
         'PaymentMethod_Electronic check',
         'intercept'
     ]
-
     x_train, x_test, y_train, y_test = train_test_split(df[logit_ivs], df[logit_dv], test_size=0.30, random_state=42)
+    # =========================================ACCURACY OF THE MODEL===================================================
+    logRegress = LogisticRegression()
+    logRegress.fit(x_train, y_train)
+    accuracy = logRegress.score(x_train, y_train)
+    # =================================================================================================================
+    print(accuracy)
     logit = sm.Logit(y_train, x_train)
     logit_result = logit.fit()
-    descriptive_analysis_of_logit_given_dataset(logit_result, y_train, df)
-    # running GLM
+
+    descriptive_analysis_of_logit_given_dataset(logit_result, y_test, x_test, df)    # running GLM
     gamma_model = sm.GLM(y_train, x_train, family=sm.families.Gamma())
     gamma_results = gamma_model.fit()
     print(gamma_results.summary())
