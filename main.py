@@ -193,7 +193,10 @@ def main():
     logRegress = LogisticRegression()
     logRegress.fit(x_train, y_train)
     accuracy = logRegress.score(x_train, y_train)
-    print(accuracy)
+    print("train set accuracy: " + accuracy)
+    logRegress.fit(x_train, y_train)
+    accuracy = logRegress.score(x_test, y_test)
+    print("test set accuracy: " + accuracy)
     logit = sm.Logit(y_train, x_train)
     logit_result = logit.fit()
 
