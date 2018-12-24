@@ -4,7 +4,9 @@ import seaborn as sns
 import numpy as np
 import scikitplot as skplt
 import statsmodels.api as sm
+from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
+from functools import reduce
 from dataPreprocessing import data_preprocessing, standardize_data
 from univariateAnalysis import frequency_measure_visualized, plotting_histograms_for_column_list, plotting_boxplots_for_column_list
 from univariateAnalysis import finding_outliers_for_columns_list, plotting_scatter_plot_for_columns, plotting_KDE_plot_for_columns
@@ -13,15 +15,19 @@ from explicativeStructureTables import run_EST, explicative_structure_table_mult
 from utils import load_data
 from bivariateAnalysis import perform_ols_for_list, print_anova_table, contingency_table_for_list_print_pretty
 from LogitRegression_and_plots import perform_logit, descriptive_analysis_of_logit, descriptive_analysis_of_logit_given_dataset
-from clusterAnalysis import best_k_for_kmeans_given_data, k_means_analysis_with_silhouette_plotting, hierarchical_cluster_analysis
-from sklearn.model_selection import train_test_split
-
+from clusterAnalysis import k_means_analysis_returning_ykm,best_k_for_kmeans_given_data, k_means_analysis_with_silhouette_plotting, hierarchical_cluster_analysis
+from Bootstrap import logit_bootstrap
 
 def main():
+    # each section of the code should be able to run separately, so in order to see particular part of the analysis
+    # comment the previous sections
+    # each section is separated by ============================================NAME===================================
+    # for further inspection all the files should have testing lines added below the functions.
+    # we are aware of some runtime warnings throughout the execution especially with bootstrap function and plotting of
+    # dendrogram
     path = "TelcoCustomerChurn.csv"
     df_telco = pd.read_csv(path)
     df = data_preprocessing(df_telco)
-
 
     column_names_to_drop = ['Churn_Yes', 'customerID', 'TotalCharges']
     columns_needing_bins = ['tenure', 'MonthlyCharges']
@@ -77,7 +83,7 @@ def main():
     plt.legend(loc='upper right')
     plt.show()
 
-    # BIVARIATE ANALYSIS
+    # ===============================================BIVARIATE ANALYSIS===============================================
     df = data_preprocessing(load_data(path),standardize=True)
     # The reference variable is Churn, which is qualitative. For this reason we will have to use ANOVA when comparing it
     # with a quantitative variable and the contingency table when comparing it with a qualitative variable.
@@ -87,13 +93,13 @@ def main():
                        'PaymentMethod_Electronic check': 'PaymentMethod_Electronic',
                        'InternetService_Fiber optic': 'InternetService_Fiber'},
               inplace=True)
+
     names_cramer = ['Contract_Monthly',
-             'PaymentMethod_Electronic',
-             'InternetService_Fiber',
-             'SeniorCitizen_Yes']
-    
+                    'PaymentMethod_Electronic',
+                    'InternetService_Fiber',
+                    'SeniorCitizen_Yes']
     names_anova = ['tenure',
-             'Contract_Monthly']
+                   'Contract_Monthly']
     
     contingency_table_for_list_print_pretty(df, column_reference, names_cramer) 
     # ANOVA analysis 
@@ -105,13 +111,14 @@ def main():
     sns.heatmap(df.corr())
     plt.show()
     # corelation between monthly charges, total charges and tenure
+    # (we have to drop na's from total charges only at this point to be able to show heatmap).
     df.dropna()
     names = ['tenure', 'MonthlyCharges', 'TotalCharges']
     sns.heatmap(df[names].corr())
     plt.show()
 
-    # CLUSTER ANALYSIS
-
+    # ===================================================== CLUSTER ANALYSIS============================================
+    df_reference = data_preprocessing(load_data(path), standardize=True)
     df = data_preprocessing(load_data(path), standardize=True)
     columns_for_clustering = ['tenure',
                               'Contract_Month-to-month',
@@ -126,10 +133,36 @@ def main():
 
     # using the code from assignment 2 we find the best number of clusters
     best_cluster_number = best_k_for_kmeans_given_data(df)
-    k_means_analysis_with_silhouette_plotting(df, best_cluster_number)
     print("best number of clusters")
+    print(best_cluster_number)
+    # for simplicity of selection we will be using 4 clusters
+    df_clstr = k_means_analysis_returning_ykm(df, 4)
+    # cluster analysis
+    n_rows = len(df)
+    df_clstr['SeniorCitizen'] = df_reference['SeniorCitizen_Yes']
+    Cluster_description = df_clstr.groupby('y_km').agg({'y_km': 'count',
+                                                        'tenure': 'mean',
+                                                        'MonthlyCharges': 'mean',
+                                                        'InternetService_Fiber optic': 'sum',
+                                                        'Contract_Month-to-month': 'sum',
+                                                        'PaymentMethod_Electronic check': 'sum',
+                                                        'SeniorCitizen': 'sum'})
+    Cluster_description['percentage_pop'] = Cluster_description['y_km'] / n_rows
+    Cluster_description['InternetService_Fiber optic'] = Cluster_description['InternetService_Fiber optic'] / \
+                                                         sum(Cluster_description['InternetService_Fiber optic'])
+    Cluster_description['Contract_Month-to-month'] = Cluster_description['Contract_Month-to-month'] / \
+                                                     sum(Cluster_description['Contract_Month-to-month'])
+    Cluster_description['PaymentMethod_Electronic check'] = Cluster_description['PaymentMethod_Electronic check'] / \
+                                                            sum(Cluster_description['PaymentMethod_Electronic check'])
+    Cluster_description['SeniorCitizen'] = Cluster_description['SeniorCitizen'] / \
+                                           sum(Cluster_description['SeniorCitizen'])
+    Cluster_description.insert(0, 'Cluster_n', ['1', '2', '3', '4'])
+    Cluster_description = Cluster_description.drop('y_km', axis=1)
+    print(Cluster_description)
 
-    # Running Logit
+
+
+    # ============================================ Running Logit ======================================================
 
     # Loading and preparing the data
     df = pd.read_csv("TelcoCustomerChurn.csv")
@@ -156,19 +189,41 @@ def main():
         'intercept'
     ]
     x_train, x_test, y_train, y_test = train_test_split(df[logit_ivs], df[logit_dv], test_size=0.30, random_state=42)
-    # =========================================ACCURACY OF THE MODEL===================================================
+    # Accuracy of the model
     logRegress = LogisticRegression()
     logRegress.fit(x_train, y_train)
     accuracy = logRegress.score(x_train, y_train)
-    # =================================================================================================================
     print(accuracy)
     logit = sm.Logit(y_train, x_train)
     logit_result = logit.fit()
 
-    descriptive_analysis_of_logit_given_dataset(logit_result, y_test, x_test, df)    # running GLM
+    descriptive_analysis_of_logit_given_dataset(logit_result, y_test, x_test, df)
+    # running GLM
     gamma_model = sm.GLM(y_train, x_train, family=sm.families.Gamma())
     gamma_results = gamma_model.fit()
     print(gamma_results.summary())
 
+    # ====================== Running Bootstrap to check the accuracy of our model =====================================
+    df = pd.read_csv("TelcoCustomerChurn.csv")
+    df = data_preprocessing(df)
+    logit_dv = 'Churn_Yes'
+    # adding an intercept
+    df['intercept'] = 1.0
+    df["tenure2"] = df["tenure"] ** 2
+    # selecting desired columns
+    logit_ivs = [
+        'tenure',
+        'tenure2',
+        'MonthlyCharges',
+        'SeniorCitizen_Yes',
+        'InternetService_Fiber optic',
+        'Contract_Month-to-month',
+        'PaymentMethod_Electronic check',
+        'intercept'
+    ]
+    number_of_iterations = 100
+    bs_result, bs_accuracy = logit_bootstrap(df, logit_dv, logit_ivs, number_of_iterations)
+    print("our model acuracy checked by bootstraping the formula for :" + number_of_iterations + " iterations")
+    print(reduce(lambda x, y: x + y, bs_accuracy) / float(len(bs_accuracy)))
 
 main()
