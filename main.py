@@ -7,7 +7,7 @@ import statsmodels.api as sm
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from functools import reduce
-from dataPreprocessing import data_preprocessing, standardize_data
+from dataPreprocessing import data_preprocessing, data_preprocessing2, standardize_data
 from univariateAnalysis import frequency_measure_visualized, plotting_histograms_for_column_list, plotting_boxplots_for_column_list
 from univariateAnalysis import finding_outliers_for_columns_list, plotting_scatter_plot_for_columns, plotting_KDE_plot_for_columns
 from univariateAnalysis import explicative_structure_table_with_bins
@@ -132,10 +132,12 @@ def main():
     hierarchical_cluster_analysis(df)
 
     # using the code from assignment 2 we find the best number of clusters
+    print("calculation of best number of clusters for a given set started, please be patient")
     best_cluster_number = best_k_for_kmeans_given_data(df)
     print("best number of clusters")
     print(best_cluster_number)
     # for simplicity of selection we will be using 4 clusters
+    print("silhouette avg for 4 clusters: ")
     df_clstr = k_means_analysis_returning_ykm(df, 4)
     # cluster analysis
     n_rows = len(df)
@@ -166,10 +168,10 @@ def main():
 
     # Loading and preparing the data
     df = pd.read_csv("TelcoCustomerChurn.csv")
-    df = data_preprocessing(df, standardize=True)
+    df = data_preprocessing2(df, standardize=True)
 
     # Filtering and fitting variables that should be included
-    logit_dv = 'Churn_Yes'
+    logit_dv = 'Churn'
     # adding an intercept
     df['intercept'] = 1.0
     # calculating the powers of continous variables to capture their change
@@ -182,7 +184,7 @@ def main():
         'tenure',
         'tenure2',
         'MonthlyCharges',
-        'SeniorCitizen_Yes',
+        'SeniorCitizen',
         'InternetService_Fiber optic',
         'Contract_Month-to-month',
         'PaymentMethod_Electronic check',
@@ -193,10 +195,10 @@ def main():
     logRegress = LogisticRegression()
     logRegress.fit(x_train, y_train)
     accuracy = logRegress.score(x_train, y_train)
-    print("train set accuracy: " + accuracy)
+    print("train set accuracy: " + str(accuracy))
     logRegress.fit(x_train, y_train)
     accuracy = logRegress.score(x_test, y_test)
-    print("test set accuracy: " + accuracy)
+    print("test set accuracy: " + str(accuracy))
     logit = sm.Logit(y_train, x_train)
     logit_result = logit.fit()
 
@@ -208,8 +210,8 @@ def main():
 
     # ====================== Running Bootstrap to check the accuracy of our model =====================================
     df = pd.read_csv("TelcoCustomerChurn.csv")
-    df = data_preprocessing(df)
-    logit_dv = 'Churn_Yes'
+    df = data_preprocessing2(df)
+    logit_dv = 'Churn'
     # adding an intercept
     df['intercept'] = 1.0
     df["tenure2"] = df["tenure"] ** 2
@@ -218,15 +220,16 @@ def main():
         'tenure',
         'tenure2',
         'MonthlyCharges',
-        'SeniorCitizen_Yes',
+        'SeniorCitizen',
         'InternetService_Fiber optic',
         'Contract_Month-to-month',
         'PaymentMethod_Electronic check',
         'intercept'
     ]
     number_of_iterations = 100
+    print("Bootstrap started, please be patient")
     bs_result, bs_accuracy = logit_bootstrap(df, logit_dv, logit_ivs, number_of_iterations)
-    print("our model acuracy checked by bootstraping the formula for :" + number_of_iterations + " iterations")
+    print("our model acuracy checked by bootstraping the formula for :" + str(number_of_iterations) + " iterations")
     print(reduce(lambda x, y: x + y, bs_accuracy) / float(len(bs_accuracy)))
 
 main()

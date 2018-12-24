@@ -25,7 +25,7 @@ def logit_bootstrap(df,dv,ivs,size=1):
         logit = sm.Logit(bs_y, bs_x)
         logit_result = logit.fit(disp = 0)
         bs_logit_results.append(logit_result.params)
-        logRegress = LogisticRegression()
+        logRegress = LogisticRegression(solver='liblinear')
         logRegress.fit(bs_x, bs_y)
         bs_logit_accuracy.append(logRegress.score(bs_x, bs_y))
     return bs_logit_results, bs_logit_accuracy
