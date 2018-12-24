@@ -2,7 +2,8 @@ import pandas as pd
 import numpy as np
 from dataPreprocessing import data_preprocessing
 import statsmodels.api as sm
-
+from sklearn.linear_model import LogisticRegression
+from functools import reduce
 
 # Defining the bootstrap function
 def logit_bootstrap(df,dv,ivs,size=1):
@@ -13,19 +14,21 @@ def logit_bootstrap(df,dv,ivs,size=1):
 
     # Initialize replicates: bs_logit_results
     bs_logit_results = []
-
+    bs_logit_accuracy = []
     # Generate replicates
     for i in range(size):
         bs_inds = np.random.choice(inds, size=len(inds))
-        bs_x = []
-        for j in range(len(ivs)):
-            bs_x.append(x[ivs[j]][bs_inds])
+        bs_x = pd.DataFrame(columns=ivs)
+        for name in ivs:
+            bs_x[name] =(x[name][bs_inds])
         bs_y = y[bs_inds]
         logit = sm.Logit(bs_y, bs_x)
-        logit_result = logit.fit()
-        bs_logit_results.append(logit_result)
-
-    return bs_logit_results
+        logit_result = logit.fit(disp = 0)
+        bs_logit_results.append(logit_result.params)
+        logRegress = LogisticRegression()
+        logRegress.fit(bs_x, bs_y)
+        bs_logit_accuracy.append(logRegress.score(bs_x, bs_y))
+    return bs_logit_results, bs_logit_accuracy
 
 
 
@@ -37,9 +40,6 @@ logit_dv = 'Churn_Yes'
 # adding an intercept
 df['intercept'] = 1.0
 df["tenure2"] = df["tenure"] ** 2
-df["MonthlyCharges2"] = df["MonthlyCharges"] ** 2
-df["MonthlyCharges3"] = df["MonthlyCharges"] ** 3
-
 # selecting desired columns
 logit_ivs = [
  'tenure',
@@ -52,4 +52,6 @@ logit_ivs = [
  'intercept'
  ]
 
-logit_bootstrap(df,logit_dv,logit_ivs,1000)
+bs_result, bs_accuracy = logit_bootstrap(df, logit_dv, logit_ivs, 50)
+print(len(bs_result[1]))
+print(reduce(lambda x, y: x + y, bs_accuracy) / float(len(bs_accuracy)))
